@@ -9,8 +9,8 @@
             Nuestra Misión
           </h3>
           <p class="text-gray-600 leading-relaxed">
-            Facilitar el envío de dinero entre Suecia y Bolivia de manera rápida, segura y confiable, 
-            conectando familias y comunidades a través de un servicio excepcional.
+            Ser el servicio de conexión más confiable y preferido, reconocido por nuestra excelencia en el trato y compromiso con la comunidad.
+            
           </p>
         </div>
 

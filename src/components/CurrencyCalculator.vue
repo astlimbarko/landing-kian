@@ -3,9 +3,9 @@
     <div class="container-custom">
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-8">
-          <h2 class="text-4xl font-bold text-gray-900 mb-4">Calculadora de Envíos</h2>
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">¿Cuánto deseas enviar?</h2>
           <p class="text-xl text-gray-600">
-            Calcula el monto que recibirás con nuestras tasas competitivas
+            Calcule de coronas a bolivianos
           </p>
         </div>
 
