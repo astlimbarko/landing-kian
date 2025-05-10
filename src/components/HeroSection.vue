@@ -6,7 +6,7 @@
       <!-- Contenedor de la imagen con desenfoque -->
       <div class="absolute inset-0 hero-background" style="
         background: linear-gradient(to right, rgba(35, 92, 224, 0.7), rgba(32, 79, 189, 0.7)),
-        url('src/assets/background.jpg');
+        url('/background.jpg');
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
