@@ -14,7 +14,7 @@
             <a href="#calculator" class="text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">Calculadora</a>
             
             <a href="#mission-vision" class="text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">Nosotros</a>
-            <a href="#contact" class="text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">Contacto</a>
+            <a href="#contact" class="text-gray-600 hover:text-blue-600 transition-colors whitespace-nowrap">Enviar</a>
           </div>
         </nav>
       </div>
