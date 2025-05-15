@@ -1,0 +1,18 @@
+[
+  {
+    "source": "/auth",
+    "target": "/auth/"
+  },
+  {
+    "source": "/auth/<*>",
+    "target": "/auth/index.html"
+  },
+  {
+    "source": "/calc",
+    "target": "/calc/"
+  },
+  {
+    "source": "/calc/<*>",
+    "target": "/calc/index.html"
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "envios-kian"
+  },
+  "targets": {
+    "envios-kian": {
+      "hosting": {
+        "envios-kian": [
+          "dist",
+          "envios-kian"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

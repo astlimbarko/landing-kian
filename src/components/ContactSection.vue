@@ -9,7 +9,7 @@
         class="absolute inset-0 hero-background"
         style="
           background: linear-gradient(to right, rgba(0, 92, 185, 0.7), rgba(0, 75, 148, 0.7)),
-          url('src/assets/background.jpg');
+          url('/background.jpg');
           background-size: cover;
           background-position: center;
           background-attachment: fixed;

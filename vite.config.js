@@ -7,4 +7,16 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.cjs',
   },
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      input: {
+        main: '/index.html',
+      },
+    },
+  },
+  server: {
+    port: 5000,
+  },
+  base: '/', // Aseguramos que la base sea la raíz para el proyecto principal
 })

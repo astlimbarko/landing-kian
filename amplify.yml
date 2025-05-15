@@ -1,0 +1,24 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd proyecto/auth && npm install
+            - cd ../calc && npm install
+            - cd ../.. && npm install
+        build:
+          commands:
+            - cd proyecto/auth && npm run build
+            - cd ../calc && npm run build
+            - cd ../.. && npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - proyecto/auth/node_modules/**/*
+          - proyecto/calc/node_modules/**/*
+    appRoot: .

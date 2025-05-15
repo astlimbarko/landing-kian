@@ -1,0 +1,24 @@
+{
+  "redirects": [
+    {
+      "source": "/auth",
+      "target": "/auth/",
+      "status": "302"
+    },
+    {
+      "source": "/auth/<*>",
+      "target": "/auth/index.html",
+      "status": "200"
+    },
+    {
+      "source": "/calc",
+      "target": "/calc/",
+      "status": "302"
+    },
+    {
+      "source": "/calc/<*>",
+      "target": "/calc/index.html",
+      "status": "200"
+    }
+  ]
+}
