@@ -26,8 +26,13 @@
                 <input
                   type="number"
                   v-model="sekAmount"
-                  @input="calculateBOB"
-                  class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  @input="convertFromSEK"
+                  @focus="activeInput = 'sek'"
+                  :class="[
+                    baseInputStyle,
+                    activeInput === 'sek' ? focusStyle : '',
+                    !preciosCargados ? disabledStyle : 'bg-white'
+                  ]"
                   placeholder="0.00"
                   :disabled="!preciosCargados"
                 />
@@ -40,41 +45,68 @@
               <div class="relative">
                 <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">BOB</span>
                 <input
-                  type="text"
-                  :value="bobAmount"
-                  class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-300 rounded-lg"
-                  readonly
+                  type="number"
+                  v-model="bobAmount"
+                  @input="convertFromBOB"
+                  @focus="activeInput = 'bob'"
+                  :class="[
+                    baseInputStyle,
+                    activeInput === 'bob' ? focusStyle : '',
+                    !preciosCargados ? disabledStyle : 'bg-white',
+                    !bobAmount && 'bg-gray-50'
+                  ]"
                   :placeholder="preciosCargados ? '0.00' : 'Cargando tasas...'"
                 />
-              </div>
-              <div v-if="tasaAplicada" class="mt-2 text-sm text-gray-600">
-                Tasa aplicada: {{ tasaAplicada === 'especial' ? 'Especial' : 'Estándar' }}
-                <span v-if="precios.precioEstandar" class="text-xs text-gray-500">
-                  (1 SEK = {{ tasaAplicada === 'especial' ? precios.precioEspecial : precios.precioEstandar }} BOB)
-                </span>
               </div>
             </div>
           </div>
 
-          <!-- Información adicional -->
-          <div v-if="preciosCargados" class="mt-8 pt-6 border-t border-gray-100">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 class="text-sm font-medium text-gray-500">Tasa estándar</h3>
-                <p class="mt-1 text-lg font-medium text-gray-900">
-                  {{ precios.precioEstandar ? `1 SEK = ${precios.precioEstandar} BOB` : '---' }}
-                </p>
+          <!-- Indicador de tasa aplicada -->
+          <div class="mt-4 text-center">
+            <span class="text-sm text-gray-600">
+              Tasa aplicada: 
+              <span :class="{'font-bold text-green-600': tasaAplicada === 'especial'}">
+                {{ tasaAplicada === 'especial' ? 'Especial' : 'Estándar' }}
+              </span>
+              <span v-if="precios.precioEstandar" class="text-xs text-gray-500">
+                (1 SEK = 
+                <span :class="{'font-bold text-green-600': tasaAplicada === 'especial'}">
+                  {{ tasaAplicada === 'especial' ? precios.precioEspecial : precios.precioEstandar }}
+                </span>
+                BOB)
+              </span>
+            </span>
+          </div>
+
+          <!-- Información adicional - Versión compacta -->
+          <div v-if="preciosCargados" class="mt-6 pt-4 border-t border-gray-100">
+            <div class="max-w-2xl mx-auto">
+              <!-- Tarjetas de precios en línea -->
+              <div class="flex flex-wrap justify-center gap-4 mb-2">
+                <!-- Tasa Estándar -->
+                <div class="text-center px-4 py-2 bg-white rounded-lg border border-gray-100">
+                  <p class="text-sm text-gray-500">Tasa Estándar</p>
+                  <p class="text-lg font-semibold text-gray-800">
+                    {{ precios.precioEstandar || '---' }} <span class="text-sm font-normal text-gray-500">BOB</span>
+                  </p>
+                </div>
+
+                <!-- Tasa Especial -->
+                <div class="text-center px-4 py-2 bg-white rounded-lg border border-gray-100">
+                  <p class="text-sm text-gray-500">Tasa Especial <span class="text-xs">(>{{" "}}{{ precios.umbralEspecial }} SEK)</span></p>
+                  <p class="text-lg font-semibold text-green-600">
+                    {{ precios.precioEspecial || '---' }} <span class="text-sm font-normal text-gray-500">BOB</span>
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 class="text-sm font-medium text-gray-500">Tasa especial (más de {{ precios.umbralEspecial }} SEK)</h3>
-                <p class="mt-1 text-lg font-medium text-green-600">
-                  {{ precios.precioEspecial ? `1 SEK = ${precios.precioEspecial} BOB` : '---' }}
+              
+              <!-- Fecha de actualización más compacta -->
+              <div class="text-center mt-2">
+                <p class="text-xs text-gray-400">
+                  Actualizado: {{ ultimaActualizacion }}
                 </p>
               </div>
             </div>
-            <p class="mt-4 text-xs text-gray-500">
-              Última actualización: {{ ultimaActualizacion }}
-            </p>
           </div>
         </div>
       </div>
@@ -91,7 +123,15 @@ export default {
   setup() {
     const sekAmount = ref('');
     const bobAmount = ref('');
+    const activeInput = ref('sek'); // 'sek' o 'bob' para saber qué campo está activo
     const tasaAplicada = ref(null);
+    
+    // Estilos
+    const focusStyle = 'ring-2 ring-blue-400 border-blue-300 shadow-sm';
+    const baseInputStyle = 'w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none transition-all duration-200';
+    const disabledStyle = 'bg-gray-50 cursor-not-allowed';
+    
+    // Estado
     const precios = ref({
       precioEstandar: null,
       precioEspecial: null,
@@ -102,26 +142,64 @@ export default {
     const preciosCargados = ref(false);
     const ultimaActualizacion = ref('No disponible');
 
-    const calculateBOB = () => {
+    const convertFromSEK = () => {
       if (!preciosCargados.value) return;
       const amount = parseFloat(sekAmount.value) || 0;
       
       if (amount <= 0) {
         bobAmount.value = '';
-        tasaAplicada.value = null;
+        // Mostrar tasa estándar cuando no hay monto
+        tasaAplicada.value = 'estandar';
         return;
       }
 
-      const esTasaEspecial = amount >= precios.value.umbralEspecial;
+      // Calcular el monto en BOB para determinar si aplicar tasa especial
+      const montoBOB = amount * precios.value.precioEstandar;
+      // Aplicar tasa especial solo si el monto en BOB es 5000 o más
+      const esTasaEspecial = montoBOB >= 5000;
       const tasa = esTasaEspecial ? precios.value.precioEspecial : precios.value.precioEstandar;
       
       if (tasa) {
         const result = (amount * tasa).toFixed(2);
-        bobAmount.value = result.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        bobAmount.value = result;
         tasaAplicada.value = esTasaEspecial ? 'especial' : 'estandar';
       } else {
-        bobAmount.value = '---';
-        tasaAplicada.value = null;
+        bobAmount.value = '';
+        tasaAplicada.value = 'estandar';
+      }
+    };
+
+    const convertFromBOB = () => {
+      if (!preciosCargados.value) return;
+      const amount = parseFloat(bobAmount.value) || 0;
+      
+      if (amount <= 0) {
+        sekAmount.value = '';
+        // Mostrar tasa estándar cuando no hay monto
+        tasaAplicada.value = 'estandar';
+        return;
+      }
+
+      // Determinar qué tasa usar basado en el monto en BOB
+      const esTasaEspecial = amount >= 5000; // Aplicar tasa especial solo si es 5000 BOB o más
+      const tasa = esTasaEspecial ? precios.value.precioEspecial : precios.value.precioEstandar;
+      
+      if (tasa) {
+        const result = (amount / tasa).toFixed(2);
+        sekAmount.value = result;
+        tasaAplicada.value = esTasaEspecial ? 'especial' : 'estandar';
+      } else {
+        sekAmount.value = '';
+        tasaAplicada.value = 'estandar';
+      }
+    };
+
+    // Función para manejar cambios en los precios
+    const actualizarCalculos = () => {
+      if (activeInput.value === 'sek') {
+        convertFromSEK();
+      } else {
+        convertFromBOB();
       }
     };
 
@@ -131,8 +209,11 @@ export default {
       precios.value = {
         precioEstandar: data.precioEstandar,
         precioEspecial: data.precioEspecial,
-        umbralEspecial: data.umbralEspecial
+        umbralEspecial: 5000 // Forzamos el umbral a 5000 BOB
       };
+      
+      // Establecer la tasa estándar por defecto
+      tasaAplicada.value = 'estandar';
       
       if (data.ultimaActualizacion) {
         const fecha = new Date(data.ultimaActualizacion);
@@ -151,60 +232,54 @@ export default {
       
       loading.value = false;
       
-      // Recalcular si hay un monto ingresado
-      if (sekAmount.value) {
-        calculateBOB();
-      }
+      // Recalcular basado en el campo activo
+      actualizarCalculos();
     };
 
     // Cargar configuración inicial
-    const cargarConfiguracionInicial = async () => {
+    onMounted(async () => {
+      let unsuscribe;
+      
       try {
-        loading.value = true;
-        const { success, data, error: configError } = await getConfiguracion();
+        const config = await getConfiguracion();
+        actualizarPrecios(config);
         
-        if (success) {
-          actualizarPrecios(data);
-        } else {
-          throw new Error(configError || 'Error desconocido');
-        }
+        // Suscribirse a cambios en tiempo real
+        unsuscribe = suscribirACambios(actualizarPrecios);
       } catch (err) {
         console.error('Error al cargar configuración:', err);
         error.value = 'No se pudieron cargar las tasas de cambio. Por favor, intente más tarde.';
         loading.value = false;
       }
-    };
-
-    // Configurar suscripción a cambios en tiempo real
-    let unsuscribe;
-    
-    onMounted(() => {
-      // Cargar configuración inicial
-      cargarConfiguracionInicial();
       
-      // Suscribirse a cambios en tiempo real
-      unsuscribe = suscribirACambios((data) => {
-        actualizarPrecios(data);
-      });
-    });
-    
-    // Limpiar suscripción al desmontar el componente
-    onUnmounted(() => {
-      if (unsuscribe) {
-        unsuscribe();
-      }
+      // Retornar función de limpieza para onUnmounted
+      return () => {
+        if (unsuscribe) unsuscribe();
+      };
     });
 
+    // Retornar todo lo necesario para la plantilla
     return {
+      // Datos reactivos
       sekAmount,
       bobAmount,
       tasaAplicada,
       precios,
-      preciosCargados,
       loading,
       error,
+      preciosCargados,
       ultimaActualizacion,
-      calculateBOB
+      activeInput,
+      
+      // Estilos
+      focusStyle,
+      baseInputStyle,
+      disabledStyle,
+      
+      // Métodos
+      convertFromSEK,
+      convertFromBOB,
+      actualizarCalculos
     };
   }
 };

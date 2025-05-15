@@ -9,7 +9,7 @@
             Nuestra Misión
           </h3>
           <p class="text-gray-600 leading-relaxed">
-            Ser el servicio de conexión más confiable y preferido, reconocido por nuestra excelencia en el trato y compromiso con la comunidad.
+            Fortalecer los lazos entre familias y comunidades, brindando un servicio cercano, confiable y comprometido con el bienestar de quienes confían en nosotros.
             
           </p>
         </div>
@@ -21,8 +21,7 @@
             Nuestra Visión
           </h3>
           <p class="text-gray-600 leading-relaxed">
-            Ser el servicio de envíos de dinero más confiable y preferido, 
-            reconocido por nuestra excelencia en el servicio y compromiso con la comunidad.
+            Convertirnos en el canal de conexión más valorado, reconocido por nuestra calidad humana, responsabilidad y compromiso con quienes más lo necesitan.
           </p>
         </div>
       </div>
