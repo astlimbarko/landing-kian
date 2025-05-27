@@ -101,11 +101,13 @@
               </div>
               
               <!-- Fecha de actualización más compacta -->
+               <!--
               <div class="text-center mt-2">
                 <p class="text-xs text-gray-400">
-                  Actualizado: {{ ultimaActualizacion }}
-                </p>
+                  Actualizado: {{ ultimaActualizacion }}  
+                </p> 
               </div>
+            -->
             </div>
           </div>
         </div>

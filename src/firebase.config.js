@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,5 +18,16 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
-export { app, analytics }; 
+// Iniciar sesión anónima
+signInAnonymously(auth)
+  .then(() => {
+    console.log("Autenticación anónima exitosa");
+  })
+  .catch((error) => {
+    console.error("Error en autenticación anónima:", error);
+  });
+
+export { app, analytics, db, auth }; 
