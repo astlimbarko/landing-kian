@@ -1,4 +1,4 @@
-import { doc, onSnapshot, setDoc, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase.config';
 
 // Configuración actual
@@ -27,7 +27,7 @@ const notificarSuscriptores = (success = true, error = null) => {
 const configRef = doc(db, "configuracion", "precios");
 const unsubscribe = onSnapshot(
   configRef,
-  async (docSnap) => {
+  (docSnap) => {
     console.log('=== INICIO CAMBIO FIRESTORE ===');
     console.log('Documento existe:', docSnap.exists());
     
@@ -35,7 +35,6 @@ const unsubscribe = onSnapshot(
       const data = docSnap.data();
       console.log('=== DATOS DE FIRESTORE ===');
       console.log('Datos completos:', data);
-      console.log('Campo ultimaActualizacion:', data.ultimaActualizacion);
       
       // Asignar valores directamente sin ningún procesamiento
       configuracionActual = {
@@ -50,27 +49,8 @@ const unsubscribe = onSnapshot(
       
       notificarSuscriptores(true);
     } else {
-      console.log('Documento no existe, creando configuración por defecto');
-      const defaultConfig = {
-        precioEstandar: '--',
-        precioEspecial: '--',
-        umbralEspecial: '--',
-        ultimaActualizacion: '--'
-      };
-      
-      console.log('Configuración por defecto:', defaultConfig);
-      
-      setDoc(configRef, defaultConfig)
-        .then(() => {
-          console.log('Configuración por defecto guardada');
-          configuracionActual = defaultConfig;
-          console.log('Configuración actual después de guardar:', configuracionActual);
-          notificarSuscriptores(true);
-        })
-        .catch(error => {
-          console.error("Error al crear configuración por defecto:", error);
-          notificarSuscriptores(false, "Error al crear configuración por defecto");
-        });
+      console.log('Documento no existe en Firestore');
+      notificarSuscriptores(false, "No se encontró la configuración en la base de datos");
     }
     console.log('=== FIN CAMBIO FIRESTORE ===');
   },
@@ -108,29 +88,4 @@ export const suscribirACambios = (callback) => {
     console.log('Suscripción eliminada');
     suscriptores.delete(callback);
   };
-};
-
-// Actualizar configuración
-export const actualizarConfiguracion = async (nuevaConfig) => {
-  try {
-    console.log('=== ACTUALIZANDO CONFIGURACIÓN ===');
-    console.log('Nueva configuración:', nuevaConfig);
-    
-    const docRef = doc(db, "configuracion", "precios");
-    const configConFecha = {
-      ...nuevaConfig,
-      ultimaActualizacion: nuevaConfig.ultimaActualizacion || '--'
-    };
-    
-    console.log('Configuración a guardar:', configConFecha);
-    await setDoc(docRef, configConFecha, { merge: true });
-    return { success: true };
-  } catch (error) {
-    console.error("Error al actualizar configuración:", error);
-    return { 
-      success: false, 
-      error: "No se pudo actualizar la configuración",
-      details: error.message 
-    };
-  }
 };
